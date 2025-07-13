@@ -47,14 +47,14 @@ async def fetch_and_post():
                         await channel.send(message)
                         print(f"✅ Posted: {entry.title}")
         
-        await asyncio.sleep(600)  # 10 minutes
+        await asyncio.sleep(600)  # Wait 10 minutes before checking again
 
 @client.event
 async def on_ready():
     print(f"🤖 Logged in as {client.user}")
     client.loop.create_task(fetch_and_post())
 
-# Keep-alive Flask web server (for Nest ping or uptime monitoring)
+# Keep-alive Flask web server (for Nest or uptime pings)
 app = Flask('')
 
 @app.route('/')
@@ -68,6 +68,7 @@ def keep_alive():
     thread = Thread(target=run_flask)
     thread.start()
 
-# Launch bot
+# Start everything
+print("🚀 Launching RSSpresso...")
 keep_alive()
 client.run(TOKEN)
