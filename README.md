@@ -44,7 +44,7 @@ You can modify or expand the feed list inside the `bot.py` file.
 1. **Clone the repo**:
 
 ```bash
-git clone https://github.com/<yourusername>/rsspresso.git
+git clone https://github.com/devaanshpathak/rsspresso.git
 cd rsspresso
 ````
 
