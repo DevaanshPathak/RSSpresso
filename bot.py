@@ -25,7 +25,7 @@ posted_links = set()
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 
-# Function to fetch and post news
+# Background task to fetch and post news
 async def fetch_and_post():
     await client.wait_until_ready()
     print("✅ RSS loop started.")
@@ -35,9 +35,9 @@ async def fetch_and_post():
         channel = client.get_channel(CHANNEL_ID)
         
         if not channel:
-            print(f"❌ Channel ID {CHANNEL_ID} not found. Make sure the bot is in the server and the ID is correct.")
+            print(f"❌ Channel ID {CHANNEL_ID} not found. Make sure the bot is invited and ID is correct.")
         else:
-            print(f"📢 Posting to channel: {channel.name}")
+            print(f"📢 Found channel: {channel.name}")
             for name, url in FEEDS:
                 feed = feedparser.parse(url)
                 for entry in feed.entries[:3]:
@@ -47,14 +47,14 @@ async def fetch_and_post():
                         await channel.send(message)
                         print(f"✅ Posted: {entry.title}")
         
-        await asyncio.sleep(600)  # Wait 10 minutes
+        await asyncio.sleep(600)  # 10 minutes
 
 @client.event
 async def on_ready():
     print(f"🤖 Logged in as {client.user}")
     client.loop.create_task(fetch_and_post())
 
-# Keep-alive web server for Nest
+# Keep-alive Flask web server (for Nest ping or uptime monitoring)
 app = Flask('')
 
 @app.route('/')
@@ -68,6 +68,6 @@ def keep_alive():
     thread = Thread(target=run_flask)
     thread.start()
 
-# Start Flask and Discord bot
+# Launch bot
 keep_alive()
 client.run(TOKEN)
