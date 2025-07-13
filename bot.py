@@ -28,22 +28,25 @@ client = discord.Client(intents=intents)
 # Function to fetch and post news
 async def fetch_and_post():
     await client.wait_until_ready()
-    channel = client.get_channel(CHANNEL_ID)
-
-    if not channel:
-        print("❌ Failed to find channel. Check your CHANNEL_ID.")
-        return
-
-    print("✅ RSSpresso is online and fetching news...")
+    print("✅ RSS loop started.")
     
     while not client.is_closed():
-        for name, url in FEEDS:
-            feed = feedparser.parse(url)
-            for entry in feed.entries[:3]:
-                if entry.link not in posted_links:
-                    posted_links.add(entry.link)
-                    message = f"📰 **{entry.title}**\n{name} | {entry.link}"
-                    await channel.send(message)
+        print("⏰ Checking feeds...")
+        channel = client.get_channel(CHANNEL_ID)
+        
+        if not channel:
+            print(f"❌ Channel ID {CHANNEL_ID} not found. Make sure the bot is in the server and the ID is correct.")
+        else:
+            print(f"📢 Posting to channel: {channel.name}")
+            for name, url in FEEDS:
+                feed = feedparser.parse(url)
+                for entry in feed.entries[:3]:
+                    if entry.link not in posted_links:
+                        posted_links.add(entry.link)
+                        message = f"📰 **{entry.title}**\n{name} | {entry.link}"
+                        await channel.send(message)
+                        print(f"✅ Posted: {entry.title}")
+        
         await asyncio.sleep(600)  # Wait 10 minutes
 
 @client.event
